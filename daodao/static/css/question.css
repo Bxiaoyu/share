@@ -1,0 +1,10 @@
+.form-container {
+    width: 500px;
+    margin: 0 auto;
+    text-align: right;
+}
+
+h3 {
+    font-size: 25px;
+    font-weight: bold;
+}

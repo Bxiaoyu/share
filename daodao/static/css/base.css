@@ -1,0 +1,29 @@
+.logo {
+    width: 100px;
+}
+
+body {
+    background: #f3f3f3;
+}
+
+.main {
+    background: #fff;
+    width: 730px;
+    margin: 0 auto;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.page-title{
+    text-align: center;
+}
+
+.nav-tabs {
+     text-align: center;
+     height: 40px;
+     line-height: 40px;
+}
+
+.container {
+    text-align: center;
+}
