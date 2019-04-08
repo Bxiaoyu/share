@@ -1,4 +1,4 @@
-{% extends 'base1.html' %}
+{% extends 'base.html' %}
 
 {% block title %}首页{% endblock %}
 
@@ -8,17 +8,21 @@
 
 {% block main %}
 <ul class="question-list-group">
+    <li>
+        <div class="user-info">
+            <span class="telephone">电话号码：{{ user.telephone }}</span><br>
+            <span class="username">用户名：{{ user.username }}</span>
+        </div>
+    </li>
     {% for question in questions %}
     <li>
         <div class="avatar-group">
             <img src="{{ url_for('static', filename='images/bee.ico') }}" alt="" class="avatar">
         </div>
         <div class="question-group">
-            <p class="question-title"><a href="{{ url_for('review', question_id=question.id) }}">{{ question.title }}</a></p>
-            <!--<p class="question-content">{{ question.content }}</p>-->
-            <div class="row">
-                {{ question.content | safe }}
-            </div>
+            <p class="question-title"><a
+                    href="{{ url_for('review', question_id=question.id) }}">{{ question.title }}</a></p>
+            <p class="question-content">{{ question.content }}</p>
             <div class="question-info">
                 <span class="question-author">{{ question.author.username }}</span>
                 <span class="question-time">{{ question.create_time }}</span>

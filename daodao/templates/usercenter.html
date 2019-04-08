@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}用户资料{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login_regist.css') }}">
+{% endblock %}
+
+{% block main %}
+<h1 class="title">个人资料</h1>
+<table class="table" width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <img src="{{ url_for('static', filename='images/boss.png') }}" style="width:60px;height: 60px;">
+    </tr>
+    <tr>
+        <th>用户名</th>
+        <td>{{ user.username }}</td>
+    </tr>
+    <tr>
+        <th>手机号</th>
+        <td>{{ user.telephone }}</td>
+    </tr>
+    <tr>
+        <th>自我介绍</th>
+        {% if user.about_me %}
+        <td>{{ user.about_me }}</td>
+        {% else %}
+        <td>这个人很懒，什么都没留下...</td>
+        {% endif %}
+    </tr>
+    <tr>
+        <th>&nbsp;</th>
+            <td><a class="edit-btn btn-default" href="{{ url_for('edit') }}">修改资料</a></td>>
+    </tr>
+</table>
+{% endblock %}

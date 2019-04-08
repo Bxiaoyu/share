@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title%}发布问答{% endblock %}
+{% block title%}发布文章{% endblock %}
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/question.css') }}">
 {% endblock %}
 
 {% block main %}
-<h3 class="page-title">发布问答</h3>
+<h3 class="page-title">发布文章</h3>
 <form action="" method="post">
 <div class="form-container">
     {{ form.csrf_token }}
