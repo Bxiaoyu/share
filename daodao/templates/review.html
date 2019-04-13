@@ -13,7 +13,14 @@
     <span>时间：{{ question.create_time }}</span>
 </p>
 <hr>
-<p class="question-content">{{ question.content }}</p>
+    <p class="question-content">{{ question.content | safe }}</p>
+    <!--
+    <div class="row">
+        <p>
+            {{ question.content | safe }}
+        </p>
+    </div>
+-->
 <hr>
 <h4>评论:({{ answer | length }})</h4>
 <form action="{{ url_for('add_answer') }}" method="post">

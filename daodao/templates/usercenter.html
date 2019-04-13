@@ -22,11 +22,14 @@
     </tr>
     <tr>
         <th>自我介绍</th>
+        <td>{{ user.about_me }}</td>
+        <!--
         {% if user.about_me %}
         <td>{{ user.about_me }}</td>
         {% else %}
-        <td>这个人很懒，什么都没留下...</td>
+        <td>{{ user.about_me }}</td>
         {% endif %}
+        -->
     </tr>
     <tr>
         <th>&nbsp;</th>

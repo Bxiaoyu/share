@@ -28,6 +28,14 @@ def index():
     return render_template('index.html', **context)
 
 
+@app.route('/index1')
+def index1():
+    context = {
+        'questions': Question.query.order_by('-create_time').all()
+    }
+    return render_template('index1.html', **context)
+
+
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -39,18 +47,21 @@ def login():
         if form.validate_on_submit():
             telephone = form.telephone.data
             password = form.password.data
-            user = User.query.filter(User.telephone == telephone).first()
-                                    
+            user = User.query.filter(User.telephone == telephone).first()                        
             if user and user.check_password(password):
                 session['user_id'] = user.id
                 # 如果想在31天内不需重复登录,设置permanent为True
                 session.permanent = True
-                return redirect(url_for('index'))
+                if user.check_admin():
+                    return redirect(url_for('index1'))
+                else:
+                    return redirect(url_for('index'))
+
             else:
                 flash("账号或密码错误，请确认后再输入!")
                 return redirect(url_for('login'))
     return render_template('login.html', form=form)
-            #    return '账号或密码错误，请确认后再输入!'
+            # return '账号或密码错误，请确认后再输入!'
 
 
 @app.route('/regist/', methods=['GET', 'POST'])
@@ -130,7 +141,7 @@ def review(question_id):
     form = ContentForm()
     user_id = session.get('user.id')
     question_model = Question.query.filter(Question.id == question_id).first()
-    answer = Answer.query.filter(Question.id == question_id).all()
+    answer = Answer.query.filter(Answer.question_id == question_id).all()
     return render_template('review.html', question=question_model, answer=answer, form=form)
 
 
@@ -186,10 +197,32 @@ def search():
 @app.route('/show')
 @login_required
 def show():
-    user_id = session.get('user_id')
     user = g.user
-    questions = Question.query.filter(User.id == user_id).all()
+    questions = Question.query.filter(Question.author_id == user.id).all()
     return render_template('list.html', user=user, questions=questions)
+
+
+@app.route('/articlemanagement')
+@login_required
+def articlemanagement():
+    users = User.query.all()
+    questions = Question.query.all()
+    return render_template('articlemanagement.html', users=users, questions=questions)
+
+
+@app.route('/usermanagement')
+@login_required
+def usermanagement():
+    users = User.query.all()
+    return render_template('usermanagement.html', users=users)
+
+
+@app.route('/answermanagement')
+@login_required
+def answermanagement():
+    users = User.query.all()
+    answers = Answer.query.all()
+    return render_template('answermanagement.html', users=users, answers=answers)
 
 
 @app.route('/delete/<question_id>')
@@ -200,6 +233,36 @@ def delete(question_id):
     db.session.commit()
     flash("删除成功")
     return redirect(url_for('show'))
+
+
+@app.route('/deletearticle/<question_id>')
+@login_required
+def deletearticle(question_id):
+    question = Question.query.filter(Question.id == question_id).first()
+    db.session.delete(question)
+    db.session.commit()
+    flash("删除文章成功")
+    return redirect(url_for('articlemanagement'))
+
+
+@app.route('/deleteuser/<user_id>')
+@login_required
+def deleteuser(user_id):
+    user = User.query.filter(User.id == user_id).first()
+    db.session.delete(user)
+    db.session.commit()
+    flash("删除用户成功")
+    return redirect(url_for('usermanagement'))
+
+
+@app.route('/deleteanswer/<answer_id>')
+@login_required
+def deleteanswer(answer_id):
+    answer = Answer.query.filter(Answer.id == answer_id).first()
+    db.session.delete(answer)
+    db.session.commit()
+    flash('删除评论成功')
+    return redirect(url_for('answermanagement'))
 
 
 @app.route('/edit/', methods=['GET', 'POST'])
@@ -245,6 +308,16 @@ def my_context_processor():
     if hasattr(g, 'user'):
         return {'user':g.user}
     return {}  # 钩子函数中，若用户不存在，也要返回一个空字典，不然会报错
+
+
+# 注册一个字符串截断过滤器,用于评论列表展示
+@app.template_filter('intercept')
+def intercept(s):
+    length = len(s)
+    if(length > 50):
+        return s[:30]
+    else:
+        return s
 
 
 if __name__ == "__main__":

@@ -11,7 +11,8 @@ class User(db.Model):
     telephone = db.Column(db.String(11), nullable=False)
     username = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    about_me = db.Column(db.Text(100), nullable=False)
+    about_me = db.Column(db.Text(100), nullable=False, default='这个人很懒，什么都没留下...')
+    is_admin = db.Column(db.Boolean, default=False)
 
     def __init__(self, *args, **kwargs):
         telephone = kwargs.get('telephone')
@@ -25,6 +26,9 @@ class User(db.Model):
     def check_password(self, raw_password):
         result = check_password_hash(self.password, raw_password)
         return result
+
+    def check_admin(self):
+        return self.is_admin
 
 
 class Question(db.Model):
